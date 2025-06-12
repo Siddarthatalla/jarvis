@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Attribute Graph</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    text-align: center;
+  }
+  select, button {
+    font-size: 18px;
+    padding: 8px 12px;
+    margin: 15px;
+  }
+  #chart-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+  <h1>Graphical Representation</h1>
+  <label for="attribute">Select Attribute:</label>
+  <select id="attribute">
+    <option value="attendance">Attendance (%)</option>
+    <option value="cgpa">CGPA</option>
+    <option value="backlogs">Backlogs</option>
+    <option value="credits">Credits</option>
+  </select>
+  <button id="show-graph">Show Graph</button>
+  <div id="chart-container">
+    <canvas id="lineChart"></canvas>
+  </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const roll = params.get('roll');
+
+  if (!roll) {
+    document.body.innerHTML = '<h2 style="color:red;">No roll number provided.</h2>';
+  }
+
+  document.getElementById('show-graph').onclick = () => {
+    const attr = document.getElementById('attribute').value;
+    fetch(`/api/student/${roll}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Student not found');
+        return res.json();
+      })
+      .then(student => {
+        showChart(attr, student[attr]);
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+  };
+
+  let chart;
+
+  function showChart(attribute, value) {
+    const ctx = document.getElementById('lineChart').getContext('2d');
+
+    // For demonstration, create a line chart with 5 points (dummy data with same value)
+    const labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'];
+    const data = [value, value, value, value, value];
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `${attribute.toUpperCase()} over semesters`,
+          data: data,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>

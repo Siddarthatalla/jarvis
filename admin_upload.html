@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Upload</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #fff8e1; }
+  .container { max-width: 500px; margin: 80px auto; background: #fff; padding: 30px; box-shadow: 0 0 10px #b0a078; }
+  input[type=file] { width: 100%; padding: 12px; margin: 20px 0; }
+  button { padding: 12px 20px; background-color: #d2691e; border: none; color: white; font-size: 16px; cursor: pointer; border-radius: 5px; }
+  button:hover { background-color: #a0522d; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload Student Data Excel File</h2>
+    <form action="/upload-excel" method="POST" enctype="multipart/form-data">
+      <input type="file" name="excelFile" accept=".xls,.xlsx" required />
+      <button type="submit">Upload</button>
+    </form>
+    <p><a href="index.html">Back to Home</a></p>
+  </div>
+</body>
+</html>

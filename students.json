@@ -1,0 +1,30 @@
+[
+  {
+    "name": "SIDDARTHA",
+    "roll": "227Z1A05H1",
+    "batch": "2022-2026",
+    "year": 3,
+    "semester": 6,
+    "department": "CSE",
+    "mailid": "siddu@gmail.com",
+    "contact": "9182081104",
+    "attendance": 85,
+    "cgpa": 9.1,
+    "backlogs": 0,
+    "credits": 120
+  },
+  {
+    "name": "ABHIRAM",
+    "roll": "227Z1A05I4",
+    "batch": "2022-2026",
+    "year": 3,
+    "semester": 6,
+    "department": "CSE",
+    "mailid": "abhi@gmail.com",
+    "contact": "8688848837",
+    "attendance": 86,
+    "cgpa": 8.6,
+    "backlogs": 0,
+    "credits": 120
+  }
+]

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Result</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    color: white;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 80%;
+    max-width: 700px;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  button {
+    display: block;
+    margin: 40px auto 0;
+    padding: 12px 25px;
+    background-color: #17a2b8;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #138496;
+  }
+</style>
+</head>
+<body>
+  <h1 id="heading">Student Result</h1>
+  <table id="result-table">
+    <!-- Student details appear here -->
+  </table>
+  <button id="view-graph-btn">View in Graph Format</button>
+
+<script>
+  // Get roll number from query string
+  const params = new URLSearchParams(window.location.search);
+  const roll = params.get('roll');
+
+  if (!roll) {
+    document.body.innerHTML = '<h2 style="color:red; text-align:center;">No roll number provided.</h2>';
+  } else {
+    fetch(`/api/student/${roll}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Student not found');
+        return res.json();
+      })
+      .then(student => {
+        // Set background color based on CGPA
+        if (student.cgpa > 9) {
+          document.body.style.backgroundColor = '#d4edda'; // light green
+          startCelebration();
+        } else if (student.cgpa >= 7) {
+          document.body.style.backgroundColor = '#cce5ff'; // light blue
+          document.body.style.color = '#000'; // black text for contrast
+        } else {
+          document.body.style.backgroundColor = '#f8d7da'; // light red
+          document.body.style.color = '#000'; // black text for contrast
+        }
+
+        // Set heading text
+        document.getElementById('heading').textContent = `${student.roll} - ${student.name} Result`;
+
+        // Fill table with student info
+        const table = document.getElementById('result-table');
+        const rows = [
+          ['Name', student.name],
+          ['Roll Number', student.roll],
+          ['Batch', student.batch],
+          ['Year', student.year],
+          ['Semester', student.semester],
+          ['Department', student.department],
+          ['Email ID', student.mailid],
+          ['Contact Number', student.contact],
+          ['Attendance', student.attendance + '%'],
+          ['CGPA', student.cgpa],
+          ['Backlogs', student.backlogs],
+          ['Credits', student.credits]
+        ];
+
+        rows.forEach(([label, value]) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<th>${label}</th><td>${value}</td>`;
+          table.appendChild(tr);
+        });
+
+        // Add event listener for graph button
+        document.getElementById('view-graph-btn').onclick = () => {
+          // Redirect to graph page with roll in query string
+          window.location.href = `/graph.html?roll=${student.roll}`;
+        };
+      })
+      .catch(err => {
+        document.body.innerHTML = `<h2 style="color:red; text-align:center;">${err.message}. <a href="student_login.html">Try again</a></h2>`;
+      });
+  }
+
+  // Celebration effect for CGPA > 9 (flower animation)
+  function startCelebration() {
+    // Simple flower confetti animation
+    const colors = ['#ff69b4', '#ff1493', '#ff69b4', '#ffb6c1', '#db7093'];
+    for (let i = 0; i < 50; i++) {
+      let confetti = document.createElement('div');
+      confetti.style.position = 'fixed';
+      confetti.style.width = '10px';
+      confetti.style.height = '10px';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.left = Math.random() * window.innerWidth + 'px';
+      confetti.style.top = '-10px';
+      confetti.style.borderRadius = '50%';
+      confetti.style.opacity = 0.8;
+      confetti.style.animation = `fall 3s linear forwards ${Math.random()}s`;
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 4000);
+    }
+  }
+
+  // Add keyframes animation for falling confetti
+  const style = document.createElement('style');
+  style.innerHTML = `
+  @keyframes fall {
+    to {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+  `;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
